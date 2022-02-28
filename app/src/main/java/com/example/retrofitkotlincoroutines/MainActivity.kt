@@ -10,6 +10,7 @@ import com.example.retrofitkotlincoroutines.repository.Repository
 import com.example.retrofitkotlincoroutines.adapter.MyAdapter
 import com.example.retrofitkotlincoroutines.databinding.ActivityMainBinding
 
+
 class  MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding

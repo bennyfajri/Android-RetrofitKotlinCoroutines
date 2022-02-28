@@ -22,7 +22,7 @@ class MyAdapter: RecyclerView.Adapter<MyAdapter.ViewHolder>(){
     override fun getItemCount(): Int {
         return myList.size
     }
-
+    
     inner class ViewHolder(private val binding: ItemDataBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(post: Post) {
             binding.tvUserId.text = post.userId.toString()
