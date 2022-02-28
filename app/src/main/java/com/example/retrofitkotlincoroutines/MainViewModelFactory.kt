@@ -2,7 +2,7 @@ package com.example.retrofitkotlincoroutines
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.retrofitkotlincoroutines.Repository.Repository
+import com.example.retrofitkotlincoroutines.repository.Repository
 
 class MainViewModelFactory(
     private val repository: Repository

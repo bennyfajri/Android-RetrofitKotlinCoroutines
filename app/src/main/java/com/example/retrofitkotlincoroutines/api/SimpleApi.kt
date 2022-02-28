@@ -19,7 +19,7 @@ interface SimpleApi {
         @Query("userId") userId: Int,
         @Query("_sort") sort: String,
         @Query("_order") order: String
-    ): Response<List<Post>>
+    ): Response<ArrayList<Post>>
 
     @GET("posts")
     suspend fun getCustomPost2(
