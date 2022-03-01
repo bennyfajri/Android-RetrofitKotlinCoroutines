@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="26dp"
-    android:paddingBottom="26dp"
-    android:id="@+id/itemData">
+    android:layout_height="match_parent"
+    tools:context=".DetailActivity"
+    android:paddingTop="30dp"
+    android:paddingBottom="30dp">
 
     <TextView
         android:id="@+id/tvUserId"
@@ -47,4 +47,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvTitle"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
