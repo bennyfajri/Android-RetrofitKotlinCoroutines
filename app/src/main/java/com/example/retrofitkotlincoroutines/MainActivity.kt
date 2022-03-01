@@ -1,5 +1,6 @@
 package com.example.retrofitkotlincoroutines
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.retrofitkotlincoroutines.repository.Repository
 import com.example.retrofitkotlincoroutines.adapter.MyAdapter
 import com.example.retrofitkotlincoroutines.databinding.ActivityMainBinding
+import com.example.retrofitkotlincoroutines.models.Post
 
 
 class  MainActivity : AppCompatActivity() {
@@ -48,11 +50,23 @@ class  MainActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView(){
-        binding.rvData.adapter = myAdapter
-        binding.rvData.layoutManager = LinearLayoutManager(this)
+        binding.rvData.apply {
+            adapter = myAdapter
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            setHasFixedSize(true)
+        }
+
+        myAdapter.setOnITemClickCallback(object : MyAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: Post) {
+                val i = Intent(this@MainActivity, DetailActivity::class.java)
+                i.putExtra(DATA_TAG, data)
+                startActivity(i)
+            }
+        })
     }
 
     companion object {
         const val TAG = "Response::::::"
+        const val DATA_TAG = "data"
     }
 }
