@@ -8,6 +8,7 @@
     android:paddingBottom="26dp"
     android:id="@+id/itemData">
 
+
     <TextView
         android:id="@+id/tvUserId"
         android:layout_width="wrap_content"

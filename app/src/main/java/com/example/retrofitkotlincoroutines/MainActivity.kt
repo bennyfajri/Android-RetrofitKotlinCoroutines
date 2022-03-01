@@ -12,6 +12,7 @@ import com.example.retrofitkotlincoroutines.adapter.MyAdapter
 import com.example.retrofitkotlincoroutines.databinding.ActivityMainBinding
 import com.example.retrofitkotlincoroutines.models.Post
 
+
 class  MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
