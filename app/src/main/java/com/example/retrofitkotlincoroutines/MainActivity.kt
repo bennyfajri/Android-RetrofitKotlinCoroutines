@@ -4,10 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.retrofitkotlincoroutines.repository.Repository
 import com.example.retrofitkotlincoroutines.adapter.MyAdapter
 import com.example.retrofitkotlincoroutines.databinding.ActivityMainBinding
 import com.example.retrofitkotlincoroutines.models.Post
@@ -16,7 +15,6 @@ import com.example.retrofitkotlincoroutines.models.Post
 class  MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
-    private lateinit var viewModel: MainViewModel
     private val myAdapter by lazy {
         MyAdapter()
     }
@@ -27,25 +25,26 @@ class  MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupRecyclerView()
+        val factory: MainViewModelFactory = MainViewModelFactory.getInstance()
+        val viewModel: MainViewModel by viewModels{
+            factory
+        }
 
-        val repository = Repository()
-        val viewModelFactory = MainViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-
-        viewModel.getCustomPosts(2, "id", "desc")
-        viewModel.getCustomPosts.observe(this, { response ->
-            when(response) {
+        viewModel.getCustomPosts(2, "id", "desc").observe(this) { response ->
+            when (response) {
                 is Resource.Loading -> {
                     Log.d(TAG, "onCreate: Loading")
                 }
                 is Resource.Success -> {
-                    response.data?.let { myAdapter.setData(it) }
+                    Log.d(TAG, "onCreate: ${response.data}")
+                    response.data.let { myAdapter.setData(it) }
                 }
                 is Resource.Error -> {
-                    Toast.makeText(applicationContext, "Connection error", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Connection error", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
-        })
+        }
 
     }
 

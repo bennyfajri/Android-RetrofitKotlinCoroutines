@@ -15,13 +15,7 @@ class MainViewModel(private val repository: Repository): ViewModel() {
     val myCustomPost2: MutableLiveData<Response<List<Post>>> = MutableLiveData()
 
     //Proper code
-    val getCustomPosts = repository.data
-
-    fun getCustomPosts(userId : Int, sort: String, order: String) {
-        viewModelScope.launch {
-            repository.getCustomPosts(userId, sort, order)
-        }
-    }
+    fun getCustomPosts(userId : Int, sort: String, order: String) = repository.getCustomPosts(userId, sort, order)
 
     fun pushPost(post: Post){
         viewModelScope.launch {
