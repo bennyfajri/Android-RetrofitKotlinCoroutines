@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.retrofitkotlincoroutines.MainActivity.Companion.DATA_TAG
 import com.example.retrofitkotlincoroutines.databinding.ActivityDetailBinding
 import com.example.retrofitkotlincoroutines.models.Post
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityDetailBinding
