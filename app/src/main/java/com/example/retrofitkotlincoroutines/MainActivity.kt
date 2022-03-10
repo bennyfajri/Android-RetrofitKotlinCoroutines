@@ -12,9 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitkotlincoroutines.adapter.MyAdapter
 import com.example.retrofitkotlincoroutines.databinding.ActivityMainBinding
 import com.example.retrofitkotlincoroutines.models.Post
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
-
+@AndroidEntryPoint
 class  MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
@@ -22,17 +23,12 @@ class  MainActivity : AppCompatActivity() {
         MyAdapter()
     }
     private var limit = 0
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
-        val factory: MainViewModelFactory = MainViewModelFactory.getInstance()
-        val viewModel: MainViewModel by viewModels {
-            factory
-        }
 
         getPost(viewModel)
         setupRecyclerView(viewModel)
