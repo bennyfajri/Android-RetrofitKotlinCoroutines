@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
 import com.example.retrofitkotlincoroutines.Resource
-import com.example.retrofitkotlincoroutines.api.RetrofitInstance
 import com.example.retrofitkotlincoroutines.api.SimpleApi
 import com.example.retrofitkotlincoroutines.models.Post
 import retrofit2.Response

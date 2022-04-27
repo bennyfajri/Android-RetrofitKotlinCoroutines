@@ -2,6 +2,7 @@ package com.example.retrofitkotlincoroutines.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitkotlincoroutines.databinding.ItemDataBinding
 import com.example.retrofitkotlincoroutines.models.Post
@@ -36,8 +37,10 @@ class MyAdapter : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
     }
 
     fun setData(newList: ArrayList<Post>) {
+        val diffUtil = PostDiffUtil(myList, newList)
+        val diffResult = DiffUtil.calculateDiff(diffUtil)
         myList = newList
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun setOnITemClickCallback(onItemClickCallback: OnItemClickCallback) {
