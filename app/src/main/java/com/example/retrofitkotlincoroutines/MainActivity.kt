@@ -45,7 +45,7 @@ class  MainActivity : AppCompatActivity() {
                     if(limit < response.data.size ){
                         limit += 6
                     }
-                    myAdapter.setData(response.data.take(limit) as ArrayList<Post>)
+                    myAdapter.submitList(response.data.take(limit) as ArrayList<Post>)
                     binding.progressBar.visibility = View.GONE
                 }
                 is Resource.Error -> {
