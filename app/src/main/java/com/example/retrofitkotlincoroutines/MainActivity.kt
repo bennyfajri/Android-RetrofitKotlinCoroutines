@@ -10,8 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.retrofitkotlincoroutines.adapter.MyAdapter
+import com.example.retrofitkotlincoroutines.adapter.UserIdAdapter
 import com.example.retrofitkotlincoroutines.databinding.ActivityMainBinding
 import com.example.retrofitkotlincoroutines.models.Post
+import com.example.retrofitkotlincoroutines.models.UserId
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
@@ -21,6 +23,9 @@ class  MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     private val myAdapter by lazy {
         MyAdapter()
+    }
+    private val userIdAdapter by lazy {
+        UserIdAdapter()
     }
     private var limit = 0
     private val viewModel: MainViewModel by viewModels()
@@ -32,10 +37,11 @@ class  MainActivity : AppCompatActivity() {
 
         getPost(viewModel)
         setupRecyclerView(viewModel)
+        setupRecyclerUserId()
     }
 
     private fun getPost(viewModel: MainViewModel) {
-        viewModel.getCustomPosts(2, "id", "desc").observe(this) { response ->
+        viewModel.getCustomPosts(sort = "id", order = "desc").observe(this) { response ->
             when (response) {
                 is Resource.Loading -> {
                     Log.d(TAG, "onCreate: Loading")
@@ -43,9 +49,17 @@ class  MainActivity : AppCompatActivity() {
                 is Resource.Success -> {
                     Log.d(TAG, "onCreate: ${response.data}")
                     if(limit < response.data.size ){
-                        limit += 6
+                        limit += 10
                     }
-                    myAdapter.submitList(response.data.take(limit) as ArrayList<Post>)
+                    myAdapter.submitList(response.data.take(limit))
+                    val userId = mutableListOf<UserId>()
+                    userId.clear()
+                    for (i in 0 until response.data.size) {
+                        userId.add(UserId(response.data[i].userId.toString()))
+                    }
+                    userIdAdapter.submitList(userId.distinct())
+                    Log.d("response::::", "userId: ${userId.distinct()}")
+                    Log.d("response::::", "userId: ${userId.distinct().size}")
                     binding.progressBar.visibility = View.GONE
                 }
                 is Resource.Error -> {
@@ -66,13 +80,13 @@ class  MainActivity : AppCompatActivity() {
                     super.onScrolled(recyclerView, dx, dy)
                     val lnManager =
                         LinearLayoutManager::class.java.cast(recyclerView.layoutManager)
-                    val lastVisibleItem = lnManager.findLastCompletelyVisibleItemPosition()
+                    val lastVisibleItem = lnManager?.findLastCompletelyVisibleItemPosition()
                     val total = myAdapter.itemCount
 
-                    if (lastVisibleItem+1 >= total) {
+                    if (lastVisibleItem!! +1 >= total) {
                         binding.progressBar.visibility = View.VISIBLE
                         CoroutineScope(Dispatchers.Main).launch {
-                            delay(3000)
+                            delay(1500)
                             getPost(viewModel)
                         }
                     }
@@ -88,6 +102,19 @@ class  MainActivity : AppCompatActivity() {
                 val i = Intent(this@MainActivity, DetailActivity::class.java)
                 i.putExtra(DATA_TAG, data)
                 startActivity(i)
+            }
+        })
+    }
+
+    private fun setupRecyclerUserId() {
+        binding.rvUserId.apply {
+            adapter = userIdAdapter
+            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
+            setHasFixedSize(true)
+        }
+        userIdAdapter.setOnItemClickCallback(object : UserIdAdapter.OnItemClickCallback{
+            override fun onItemClicked(data: UserId) {
+
             }
         })
     }
