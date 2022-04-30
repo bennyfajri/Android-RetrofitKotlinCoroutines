@@ -29,6 +29,8 @@ class  MainActivity : AppCompatActivity() {
     }
     private var limit = 0
     private val viewModel: MainViewModel by viewModels()
+    private var selectedId = ""
+    private var isChecked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +59,7 @@ class  MainActivity : AppCompatActivity() {
                     for (i in 0 until response.data.size) {
                         userId.add(UserId(response.data[i].userId.toString()))
                     }
-                    userIdAdapter.submitList(userId.distinct())
+                    userIdAdapter.setData(userId.distinct() as ArrayList<UserId>)
                     Log.d("response::::", "userId: ${userId.distinct()}")
                     Log.d("response::::", "userId: ${userId.distinct().size}")
                     binding.progressBar.visibility = View.GONE
@@ -114,7 +116,27 @@ class  MainActivity : AppCompatActivity() {
         }
         userIdAdapter.setOnItemClickCallback(object : UserIdAdapter.OnItemClickCallback{
             override fun onItemClicked(data: UserId) {
-
+                if(!isChecked) {
+                    selectedId = data.userId
+                    Toast.makeText(
+                        applicationContext,
+                        "selectedId: $selectedId",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    isChecked = true
+                }else {
+                    if(data.userId == selectedId) {
+                        isChecked = false
+                        selectedId = ""
+                    }
+                    if(selectedId.isNotBlank()) {
+                        Toast.makeText(
+                            applicationContext,
+                            "Matikan dulu check pada kategori user $selectedId",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
         })
     }
