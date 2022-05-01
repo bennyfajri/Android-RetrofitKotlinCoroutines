@@ -25,7 +25,7 @@ class Repository @Inject constructor(
     }
 
     fun getCustomPosts(
-        userId: Int,
+        userId: Int? = null,
         sort: String,
         order: String
     ): LiveData<Resource<ArrayList<Post>>> = liveData {

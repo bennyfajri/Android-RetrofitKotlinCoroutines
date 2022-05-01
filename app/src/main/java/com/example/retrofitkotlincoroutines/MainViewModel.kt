@@ -20,7 +20,7 @@ class MainViewModel @Inject constructor(
     val myCustomPost2: MutableLiveData<Response<List<Post>>> = MutableLiveData()
 
     //Proper code
-    fun getCustomPosts(userId: Int, sort: String, order: String) =
+    fun getCustomPosts(userId: Int? = null, sort: String, order: String) =
         repository.getCustomPosts(userId, sort, order)
 
     fun pushPost(post: Post) {
