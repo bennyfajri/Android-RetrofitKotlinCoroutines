@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 
 @AndroidEntryPoint
-class  MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     private val myAdapter by lazy {
@@ -31,45 +31,46 @@ class  MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     private var selectedId = ""
     private var isChecked = false
+    private val userIdList = arrayListOf(
+        UserId("1"), UserId("2"), UserId("3"),
+        UserId("4"), UserId("5"), UserId("6"),
+        UserId("7"), UserId("8"), UserId("9"), UserId("10"),
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        getPost(viewModel)
+        getPost()
         setupRecyclerView(viewModel)
         setupRecyclerUserId()
     }
 
-    private fun getPost(viewModel: MainViewModel) {
-        viewModel.getCustomPosts(sort = "id", order = "desc").observe(this) { response ->
-            when (response) {
-                is Resource.Loading -> {
-                    Log.d(TAG, "onCreate: Loading")
-                }
-                is Resource.Success -> {
-                    Log.d(TAG, "onCreate: ${response.data}")
-                    if(limit < response.data.size ){
-                        limit += 10
+    private fun getPost(userId: Int? = null) {
+        viewModel.getCustomPosts(userId = userId, sort = "id", order = "desc")
+            .observe(this) { response ->
+                when (response) {
+                    is Resource.Loading -> {
+                        Log.d(TAG, "onCreate: Loading")
                     }
-                    myAdapter.submitList(response.data.take(limit))
-                    val userId = mutableListOf<UserId>()
-                    userId.clear()
-                    for (i in 0 until response.data.size) {
-                        userId.add(UserId(response.data[i].userId.toString()))
+                    is Resource.Success -> {
+                        Log.d(TAG, "onCreate: ${response.data}")
+                        if (limit < response.data.size) {
+                            limit += 10
+                        }
+                        myAdapter.submitList(response.data.take(limit))
+                        userIdAdapter.setData(userIdList)
+                        Log.d("response::::", "userId: ${userIdList.distinct()}")
+                        Log.d("response::::", "userId: ${userIdList.distinct().size}")
+                        binding.progressBar.visibility = View.GONE
                     }
-                    userIdAdapter.setData(userId.distinct() as ArrayList<UserId>)
-                    Log.d("response::::", "userId: ${userId.distinct()}")
-                    Log.d("response::::", "userId: ${userId.distinct().size}")
-                    binding.progressBar.visibility = View.GONE
-                }
-                is Resource.Error -> {
-                    Toast.makeText(applicationContext, "Connection error", Toast.LENGTH_SHORT)
-                        .show()
+                    is Resource.Error -> {
+                        Toast.makeText(applicationContext, "Connection error", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
-        }
     }
 
     private fun setupRecyclerView(viewModel: MainViewModel) {
@@ -85,11 +86,11 @@ class  MainActivity : AppCompatActivity() {
                     val lastVisibleItem = lnManager?.findLastCompletelyVisibleItemPosition()
                     val total = myAdapter.itemCount
 
-                    if (lastVisibleItem!! +1 >= total) {
+                    if (lastVisibleItem!! + 1 >= total) {
                         binding.progressBar.visibility = View.VISIBLE
                         CoroutineScope(Dispatchers.Main).launch {
                             delay(1500)
-                            getPost(viewModel)
+                            getPost(userId = selectedId.toInt())
                         }
                     }
 
@@ -111,25 +112,23 @@ class  MainActivity : AppCompatActivity() {
     private fun setupRecyclerUserId() {
         binding.rvUserId.apply {
             adapter = userIdAdapter
-            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
             setHasFixedSize(true)
         }
-        userIdAdapter.setOnItemClickCallback(object : UserIdAdapter.OnItemClickCallback{
+        userIdAdapter.setOnItemClickCallback(object : UserIdAdapter.OnItemClickCallback {
             override fun onItemClicked(data: UserId) {
-                if(!isChecked) {
+                if (!isChecked) {
                     selectedId = data.userId
-                    Toast.makeText(
-                        applicationContext,
-                        "selectedId: $selectedId",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Log.d(TAG, "onItemClicked: $selectedId")
+                    getPost(selectedId.toInt())
                     isChecked = true
-                }else {
-                    if(data.userId == selectedId) {
+                } else {
+                    if (data.userId == selectedId) {
                         isChecked = false
                         selectedId = ""
                     }
-                    if(selectedId.isNotBlank()) {
+                    if (selectedId.isNotBlank()) {
                         Toast.makeText(
                             applicationContext,
                             "Matikan dulu check pada kategori user $selectedId",
